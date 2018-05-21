@@ -12,64 +12,63 @@
 <html>
 <head>
     <title>Title</title>
-    <link rel="stylesheet" href="/WEB-INF/resources/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/resources/css/bootstrap.min.css"/>
 </head>
 <body>
 
-<c:url var="firstUrl" value="/students/pages?page=0"/>
-<c:url var="lastUrl" value="/students/pages?page=${studentsList.totalPages - 1}"/>
-
-<c:url var="nextUrl" value="/students/pages?page=${currentIndex + 1}"/>
-<c:url var="prevUrl" value="/students/pages?page=${currentIndex - 1}"/>
-
 <div class="container">
 
-    <div class="row">
-        <ul class="pagination">
-            <c:choose>
-                <c:when test="${currentIndex == 0}">
-                    <li class="disabled">
-                        <a href="#">&lt;&lt;</a>
-                    </li>
-                    <li class="disabled">
-                        <a href="#">&lt;</a>
-                    </li>
-                    <li class="active">
-                        <a href="${firstUrl}">1</a>
-                    </li>
-                </c:when> <c:otherwise>
-                <li>
-                    <a href="#">&lt;&lt;</a>
-                </li>
-                <li>
-                    <a href="#">&lt;</a>
-                </li>
-            </c:otherwise>
-            </c:choose>
-            <c:forEach var="i" begin="${beginIndex}" end="${endIndex}">
-                <c:url var="pageUrl" value="/students/pages?page=${i}"/>
+    <c:url var="firstUrl" value="/students/pages?page=0" />
+    <c:url var="lastUrl" value="/students/pages?page=${ studentsList.totalPages - 1 }"/>
+    <c:url var="nextUrl" value="/students/pages?page=${ currentIndex + 1 }" />
+    <c:url var="prevUrl" value="/students/pages?page=${ currentIndex - 1 }" />
+
+    <div class="container">
+
+        <div class="row">
+            <ul class="pagination">
                 <c:choose>
-                    <c:when test="${i == currentsIndex}">
-                        <li class="active"><a href="#">${i + 1}</a> </li>
+                    <c:when test="${ currentIndex == 0 }">
+                        <li class="disabled"><a href="#">&lt;&lt</a></li>
+                        <li class="disabled"><a href="#">&lt</a></li>
+                        <li class="active"><a href="${firstUrl}">1</a></li>
                     </c:when>
+
                     <c:otherwise>
-                        <li><a href="${pageUrl}">${i + 1}</a> </li>
+                        <li ><a href="${firstUrl}">&lt;&lt</a></li>
+                        <li ><a href="${prevUrl}">&lt;</a></li>
                     </c:otherwise>
                 </c:choose>
-<c:choose>
-    <c:when test="${currentIndex + 1 == studentList.totalPages}" >
-        <li class="disabled"><a href="#">&gt;</a> </li>
-        <li class="disabled"><a href="#">&gt;&gt;</a> </li>
-    </c:when>
-    <c:otherwise>
-        <li><a href="${nextUrl}">&gt;</a> </li>
-        <li><a href="${lastUrl}">&gt;&gt;</a> </li>
-    </c:otherwise>
-</c:choose>
+                <c:forEach var="i" begin="${beginIndex}" end="${ endIndex }">
+                    <c:url var="pageUrl" value="/students/pages?page=${i}"/>
 
-            </c:forEach>
-        </ul>
-    </div>
+                    <c:choose>
+                        <c:when test="${i == currentIndex }">
+                            <li class="active"><a href="#">${i + 1}</a></li>
+                        </c:when>
+
+                        <c:otherwise>
+                            <li><a href="${pageUrl}">${i + 1}</a> </li>
+                        </c:otherwise>
+                    </c:choose>
+
+                </c:forEach>
+
+                <c:choose>
+                    <c:when test="${ currentIndex + 1 == studentsList.totalPages}">
+                        <li class="disabled"><a href="#">&gt;</a></li>
+                        <li class="disabled"><a href="#">&gt;&gt;</a></li>
+                    </c:when>
+                    <c:otherwise>
+                        <li ><a href="${nextUrl}">&gt;</a></li>
+                        <li ><a href="${lastUrl}">&gt;&gt;</a></li>
+                    </c:otherwise>
+
+                </c:choose>
+
+            </ul>
+        </div>
+
 
     <div class="row">
         <table class="table table-bordered tablse-sm">
@@ -80,15 +79,15 @@
             <th>Age</th>
             </thead>
             <tbody>
-            <%--<c:forEach items="studentPageListByPageSize" var="student">--%>
-                <%--&lt;%&ndash;${student}&ndash;%&gt;--%>
-                <%--<tr>--%>
-                    <%--<td>${student.id}</td>--%>
-                    <%--<td>${student.firstName}</td>--%>
-                    <%--<td>${student.lastName}</td>--%>
-                    <%--<td>${student.age}</td>--%>
-                <%--</tr>--%>
-            <%--</c:forEach>--%>
+            <c:forEach items="${studentPageListByPageSize}" var="student">
+                <%--${student}--%>
+                <tr>
+                    <td>${student.id}</td>
+                    <td>${student.firstName}</td>
+                    <td>${student.lastName}</td>
+                    <td>${student.age}</td>
+                </tr>
+            </c:forEach>
             </tbody>
         </table>
     </div>

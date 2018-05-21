@@ -1,20 +1,31 @@
 package edu.logos;
 
 import edu.logos.entity.Student;
+import edu.logos.entity.User;
 import edu.logos.repository.StudentRepository;
+import edu.logos.repository.UserRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
+
 @SpringBootApplication
 public class SpringbootwebApplication extends SpringBootServletInitializer {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         ConfigurableApplicationContext ctx =
                 SpringApplication.run(SpringbootwebApplication.class, args);
         addStudent(ctx);
+        addUser(ctx);
     }
 
     @Override
@@ -36,5 +47,59 @@ public class SpringbootwebApplication extends SpringBootServletInitializer {
                 studentRepository.save(student);
             }
         }
+    }
+
+    private static void addUser(ConfigurableApplicationContext ctx) throws Exception {
+        UserRepository userRepository = ctx.getBean(UserRepository.class);
+        Long usersCount = userRepository.count();
+        System.out.println("Users in DB: " + usersCount);
+        if (usersCount == 0) {
+            File fileFirstName = new File("first_name.txt");
+            File fileLastName = new File("last_name.txt");
+
+            ArrayList fnList = new ArrayList<>();
+            ArrayList lnList = new ArrayList<>();
+
+            FileReader fr = new FileReader(fileFirstName);
+            BufferedReader br = new BufferedReader(fr);
+
+            String line;
+            while ((line = br.readLine()) != null) {
+                fnList.add(line);
+            }
+            fr.close();
+            br.close();
+
+            fr = new FileReader(fileLastName);
+            br = new BufferedReader(fr);
+
+            while ((line = br.readLine()) != null) {
+                lnList.add(line);
+            }
+            fr.close();
+            br.close();
+
+            String firstName;
+            String lastName;
+            int salary;
+
+            for (int i = 0; i < lnList.size(); i++) {
+                User user = new User();
+                firstName = String.valueOf(fnList.listIterator(new Random().nextInt(fnList.size())).next());
+                lastName = String.valueOf(lnList.listIterator(new Random().nextInt(lnList.size())).next());
+                salary = new Random().nextInt(190000) + 3000;
+                user.setUserName("user" + i);
+                user.setFirstName(firstName);
+                user.setLastName(lastName);
+                user.setEmail(firstName + "." + lastName + "@gmail.com");
+                user.setSalary(salary);
+                user.setPassword("Temp1234");
+                userRepository.save(user);
+            }
+
+        }
+//Iterator<String> iter = fnList.listIterator();
+        System.out.println();
+
     }
 }

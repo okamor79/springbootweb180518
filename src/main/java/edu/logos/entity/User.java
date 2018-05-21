@@ -40,4 +40,6 @@ public class User extends BaseEntity {
 
     @Email
     private String email;
+
+    private int salary;
 }

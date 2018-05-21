@@ -1,11 +1,14 @@
 package edu.logos.controller;
 
 import edu.logos.dto.StudentDTO;
+import edu.logos.dto.UserDTO;
+import edu.logos.dto.filter.RockyFilter;
 import edu.logos.dto.filter.SimpleFilter;
 import edu.logos.entity.Country;
 import edu.logos.entity.Student;
 import edu.logos.entity.User;
 
+import edu.logos.entity.enums.PageSize;
 import edu.logos.mapper.StudentMapper;
 
 import edu.logos.service.CountryService;
@@ -17,16 +20,13 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @Controller
-@SessionAttributes({"countries","saveUser"})
+@SessionAttributes({"countries", "saveUser"})
 public class HomeController {
 
     private CountryService countryService;
@@ -50,6 +50,7 @@ public class HomeController {
         return "c";
 
     }
+
     @GetMapping("/add/student")
     public String showAddCStudentForm(Model model) {
         model.addAttribute("studentModel", new Student());
@@ -59,7 +60,7 @@ public class HomeController {
 
     @PostMapping("/add/country")
     public String saveCountry(@Valid @ModelAttribute("countryModel") Country country,
-                              BindingResult br){
+                              BindingResult br) {
         if (br.hasErrors()) {
             return "add-country";
         }
@@ -78,7 +79,7 @@ public class HomeController {
 
     @GetMapping("/add/user")
     public String showAddUserForm(Model model) {
-    model.addAttribute("saveUser", new User());
+        model.addAttribute("saveUser", new User());
         return "add-user";
     }
 
@@ -103,14 +104,16 @@ public class HomeController {
             @Valid @ModelAttribute("studentDTOModel") StudentDTO studentDTO,
             BindingResult br
     ) {
-        if( br.hasErrors()) { return "add-student-dto"; }
+        if (br.hasErrors()) {
+            return "add-student-dto";
+        }
         Student student = StudentMapper.studentDTOtoStudent(studentDTO);
         studentService.saveStudent(student);
         return "redirect:/";
     }
 
     @GetMapping("/students")
-    public String showStudents(Model model){
+    public String showStudents(Model model) {
         model.addAttribute("simpleModel", new SimpleFilter());
         List<Student> s = studentService.findAllStudents();
         System.out.println(s.size());
@@ -127,15 +130,59 @@ public class HomeController {
         return "student-list";
     }
 
+    @GetMapping("/users")
+    public String showUsersPage(Model model) {
+        model.addAttribute("usersList", userService.findAllUsers());
+        return "users-list";
+    }
+
+    @GetMapping("/users/pages")
+    public String showUsersByPage(
+            Model model,
+//            @RequestParam("search") RockyFilter filter,
+     //       @ModelAttribute("searchText") RockyFilter filter,
+            @PageableDefault Pageable pageable
+    ) {
+        Page<User> page = userService.findUserByPAge(pageable);
+//        Page<User> page = userService.findUsersByPage(pageable, filter);
+
+        int currentPage = page.getNumber();
+        int begin = Math.max(1, currentPage - 5);
+        int end = Math.min(begin + 5, page.getNumber());
+        model.addAttribute("beginIndex", begin);
+        model.addAttribute("endIndex", end);
+        model.addAttribute("currentIndex", currentPage);
+        model.addAttribute("usersList", page);
+        model.addAttribute("usersPageListByPageSize", page.getContent());
+        model.addAttribute("searchText", new RockyFilter());
+        return "users-list";
+    }
+
+    @GetMapping("/users/pages/search")
+    public String showUserFiltered(
+            @ModelAttribute("searchText") RockyFilter filter,
+            @PageableDefault Pageable pageable,
+            Model model
+    ) {
+        Page<User> page = userService.findUsersByPage(pageable, filter);
+        int currentPage = page.getNumber();
+        int begin = Math.max(1, currentPage - 5);
+        int end = Math.min(begin + 5, page.getNumber());
+        model.addAttribute("beginIndex", begin);
+        model.addAttribute("endIndex", end);
+        model.addAttribute("currentIndex", currentPage);
+        model.addAttribute("usersList", page);
+        model.addAttribute("usersPageListByPageSize", page.getContent());
+        model.addAttribute("searchText", filter);
+        return "users-list";
+    }
+
     @GetMapping("/students/pages")
     public String showStudentsByPage(
             Model model,
             @PageableDefault Pageable pageable
-            ) {
+    ) {
         Page<Student> page = studentService.findAllStudentsByPage(pageable);
-
-
-//        model.addAttribute("stlist", page.getContent());
         int currentPage = page.getNumber();
         int begin = Math.max(1, currentPage - 5);
         int end = Math.min(begin + 5, page.getNumber());
@@ -144,7 +191,6 @@ public class HomeController {
         model.addAttribute("currentIndex", currentPage);
         model.addAttribute("studentsList", page);
         model.addAttribute("studentPageListByPageSize", page.getContent());
-        page.getContent().forEach(c -> System.out.println(c));
         return "students-by-page";
     }
 
