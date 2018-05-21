@@ -96,10 +96,7 @@ public class SpringbootwebApplication extends SpringBootServletInitializer {
                 user.setPassword("Temp1234");
                 userRepository.save(user);
             }
-
         }
-//Iterator<String> iter = fnList.listIterator();
         System.out.println();
-
     }
 }

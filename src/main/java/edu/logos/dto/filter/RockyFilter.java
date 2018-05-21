@@ -11,11 +11,11 @@ public class RockyFilter {
 
     private String search;
 
-    private int minValue;
+    private int minValue = 2000;
 
-    private int maxValue;
+    private int maxValue = 200000;
 
-    private int pageSize;
+    private int pageSize = 10;
 
     public String toString() {
         return this.getSearch();

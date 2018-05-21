@@ -11,6 +11,8 @@
 
 <div class="container-fluid">
 
+    <c:url var="firstUrl"
+           value="/users/pages/search?page=0&search=${searchText.search}&minValue=${searchText.minValue}&maxValue=${searchText.maxValue}&pageSize=${searchText.pageSize}"/>
     <c:url var="lastUrl"
            value="/users/pages/search?page=${usersList.totalPages - 1}&search=${searchText.search}&minValue=${searchText.minValue}&maxValue=${searchText.maxValue}&pageSize=${searchText.pageSize}"/>
     <c:url var="nextUrl"
@@ -42,7 +44,6 @@
                 <fieldset class="text-center">
                     <button type="submit" class="btn btn-success">Search</button>
                     <button type="reset" class="btn btn-danger">Crear</button>
-
                 </fieldset>
             </form:form>
         </div>
@@ -55,11 +56,11 @@
                 <c:choose>
                     <c:when test="${ currentIndex == 0 }">
                         <li class="disabled"><a href="#">&lt;&lt</a></li>
-                        <li class="disabled"><a href="#">&lt</a></li>
+                        <li class="disabled"><a href="#">&lt;</a></li>
                         <li class="active"><a href="${firstUrl}">1</a></li>
                     </c:when>
                     <c:otherwise>
-                        <li><a href="${firstUrl}">&lt;&lt</a></li>
+                        <li><a href="${firstUrl}">&lt;&lt;</a></li>
                         <li><a href="${prevUrl}">&lt;</a></li>
                     </c:otherwise>
                 </c:choose>
