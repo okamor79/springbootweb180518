@@ -89,7 +89,7 @@
             </ul>
         </div>
         <div class="row">
-            <table class="table table-bordered table-sm">
+            <table class="table table-bordered table-sm table-hover">
                 <thead>
                 <th class="text-center">Username</th>
                 <th class="text-center">Full name</th>
@@ -98,7 +98,7 @@
                 </thead>
                 <tbody>
                 <c:forEach items="${usersPageListByPageSize}" var="user">
-                    <tr>
+                    <tr onclick="document.location.href='/users/info/${user.id}'" style="cursor: pointer">
                         <td class="text-center">${user.userName}</td>
                         <td>${user.firstName} ${user.lastName}</td>
                         <td class="text-right">${user.salary}</td>

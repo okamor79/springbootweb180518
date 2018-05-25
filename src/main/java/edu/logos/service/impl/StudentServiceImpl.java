@@ -2,6 +2,7 @@ package edu.logos.service.impl;
 
 import edu.logos.dto.filter.SimpleFilter;
 import edu.logos.entity.Student;
+import edu.logos.exception.StudentNotFoundException;
 import edu.logos.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -10,13 +11,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-
 import edu.logos.service.StudentService;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -24,13 +25,15 @@ public class StudentServiceImpl implements StudentService {
     @Autowired private StudentRepository studentRepository;
 
     @Override
+    @Transactional
     public void saveStudent(Student student) {
         studentRepository.save(student);
     }
 
     @Override
     public Student findStudentByID(int id) {
-        return studentRepository.getOne(id);
+//        return studentRepository.getOne(id);
+        return studentRepository.findById(id).orElseThrow(() -> new StudentNotFoundException("Student with id[" + id + "] not found"));
     }
 
     @Override

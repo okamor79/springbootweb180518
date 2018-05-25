@@ -11,7 +11,7 @@ public interface UserService {
 
     void saveUser(User user);
 
-    User findUserByID(int id);
+    User findUserByID(int id) throws Exception;
 
     List<User> findAllUsers();
 

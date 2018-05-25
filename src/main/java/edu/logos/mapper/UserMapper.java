@@ -7,11 +7,6 @@ import org.modelmapper.ModelMapper;
 public interface UserMapper {
 
     static User userDTOToUser(UserDTO userDTO) {
-        User user = new User();
-        user.setEmail(userDTO.getEmail());
-        user.setUserName(userDTO.getUserName());
-        user.setFirstName(userDTO.getFirstName());
-        user.setLastName(userDTO.getLastName());
-        return user;
+        return new ModelMapper().map(userDTO, User.class);
     }
 }

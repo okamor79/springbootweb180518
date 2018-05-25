@@ -18,4 +18,7 @@ public class UserDTO {
 
     private String userName;
 
+    private int salary;
+
+    private String imageName;
 }

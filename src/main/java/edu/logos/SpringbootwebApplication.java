@@ -2,13 +2,16 @@ package edu.logos;
 
 import edu.logos.entity.Student;
 import edu.logos.entity.User;
+import edu.logos.entity.UserImages;
 import edu.logos.repository.StudentRepository;
 import edu.logos.repository.UserRepository;
+import edu.logos.service.utils.CustomFileUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -18,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+@EnableTransactionManagement
 @SpringBootApplication
 public class SpringbootwebApplication extends SpringBootServletInitializer {
 
@@ -84,6 +88,9 @@ public class SpringbootwebApplication extends SpringBootServletInitializer {
             int salary;
 
             for (int i = 0; i < lnList.size(); i++) {
+                UserImages uImages = new UserImages();
+                uImages.setImageName("");
+
                 User user = new User();
                 firstName = String.valueOf(fnList.listIterator(new Random().nextInt(fnList.size())).next());
                 lastName = String.valueOf(lnList.listIterator(new Random().nextInt(lnList.size())).next());
@@ -94,7 +101,9 @@ public class SpringbootwebApplication extends SpringBootServletInitializer {
                 user.setEmail(firstName + "." + lastName + "@gmail.com");
                 user.setSalary(salary);
                 user.setPassword("Temp1234");
+                user.setUserImages(uImages);
                 userRepository.save(user);
+                CustomFileUtils.createFolder("user_" + user.getId());
             }
         }
         System.out.println();

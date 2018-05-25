@@ -9,12 +9,12 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 @Entity
-@Table(name = "student")
+@Table(name = "student", indexes = @Index(columnList = "first_name, last_name"))
 @Getter @Setter @NoArgsConstructor @ToString(callSuper = true)
 public class Student extends BaseEntity {
 
     @NotEmpty
-    @Column(name = "first_name")
+    @Column(name = "first_name", nullable = false)
     private String firstName;
 
     @Size(min = 1, max = 20)
@@ -31,4 +31,8 @@ public class Student extends BaseEntity {
     private Country country;
 
     private String password;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn
+    private StudentDetails studentDetails;
 }

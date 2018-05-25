@@ -7,12 +7,13 @@ import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name = "country")
+@Table(name = "country", indexes = @Index(columnList = "name", name = "IDX_Name"))
 @Getter @Setter @NoArgsConstructor
 public class Country extends BaseEntity {
 

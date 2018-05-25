@@ -49,4 +49,8 @@ public class CustomFileUtils {
         }
         return encodedFile;
     }
+
+    public static String getFolderPath(String folderName) {
+        return ROOT_PATH + SEPARATOR + folderName + SEPARATOR;
+    }
 }

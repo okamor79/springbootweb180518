@@ -6,6 +6,7 @@ import edu.logos.dto.filter.RockyFilter;
 import edu.logos.dto.filter.SimpleFilter;
 import edu.logos.entity.Country;
 import edu.logos.entity.Student;
+import edu.logos.entity.StudentDetails;
 import edu.logos.entity.User;
 
 import edu.logos.entity.enums.PageSize;
@@ -14,6 +15,7 @@ import edu.logos.mapper.StudentMapper;
 import edu.logos.service.CountryService;
 import edu.logos.service.StudentService;
 import edu.logos.service.UserService;
+import edu.logos.service.utils.CustomFileUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -26,7 +28,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @Controller
-@SessionAttributes({"countries", "saveUser"})
+@SessionAttributes({"countries", "saveUser","userInfo"})
 public class HomeController {
 
     private CountryService countryService;
@@ -116,7 +118,6 @@ public class HomeController {
     public String showStudents(Model model) {
         model.addAttribute("simpleModel", new SimpleFilter());
         List<Student> s = studentService.findAllStudents();
-        System.out.println(s.size());
         model.addAttribute("studentsList", s);
         return "student-list";
     }
@@ -140,7 +141,7 @@ public class HomeController {
     public String showUsersByPage(
             Model model,
 //            @RequestParam("search") RockyFilter filter,
-     //       @ModelAttribute("searchText") RockyFilter filter,
+            //       @ModelAttribute("searchText") RockyFilter filter,
             @PageableDefault Pageable pageable
     ) {
         Page<User> page = userService.findUserByPAge(pageable);
@@ -192,6 +193,42 @@ public class HomeController {
         model.addAttribute("studentsList", page);
         model.addAttribute("studentPageListByPageSize", page.getContent());
         return "students-by-page";
+    }
+
+    @GetMapping("/students/{studentID}")
+    public String findStudentByID(@PathVariable("studentID") int id) {
+        Student student = studentService.findStudentByID(id);
+        System.out.println(student);
+        return "home";
+    }
+
+    @GetMapping("/students/create")
+    public String createStudent() {
+        StudentDetails studentDetails = new StudentDetails();
+
+        studentDetails.setEmail("jshjshgh@dhfghjshg.com");
+
+        Student student = new Student();
+        student.setFirstName("fi");
+        student.setLastName("last");
+        student.setStudentDetails(studentDetails);
+        studentService.saveStudent(student);
+        return "home";
+    }
+
+    @GetMapping("/users/info/{userID}")
+    public String showUserInfo(@PathVariable("userID") int id, Model model) throws Exception {
+        User user = userService.findUserByID(id);
+        model.addAttribute("userInfo", user);
+        String path = user.getUserImages().getImageName();
+        if (!path.isEmpty()) {
+            model.addAttribute("imageSrc", CustomFileUtils.getImage("user_" + user.getId(),path));
+        } else {
+            model.addAttribute("imageSrc", CustomFileUtils.getImage("","test/Default.png"));
+        }
+
+
+        return "user-info";
     }
 
 }

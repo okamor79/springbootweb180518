@@ -2,8 +2,10 @@ package edu.logos.service.impl;
 
 import edu.logos.dto.filter.RockyFilter;
 import edu.logos.entity.User;
+import edu.logos.entity.UserImages;
 import edu.logos.repository.UserRepository;
 import edu.logos.service.UserService;
+import edu.logos.service.utils.CustomFileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
@@ -29,8 +31,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findUserByID(int id) {
-        return userRepository.getOne(id);
+    public User findUserByID(int id) throws Exception {
+        User user = userRepository.getOne(id);
+//        String folderPath = CustomFileUtils.getFolderPath("test");
+//        user.getUserImages().setImageName(folderPath + "Default.png");
+        saveUser(user);
+
+        return user;
     }
 
     @Override

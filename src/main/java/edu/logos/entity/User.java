@@ -6,17 +6,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name ="user")
+@Table(name ="user", indexes = {
+        @Index(columnList = "user_name", name = "INDX_UserName"),
+        @Index(columnList = "first_name, last_name", name = "INDX_FN_LN")}
+        )
 @CheckConfirmPassword(message = "snjvsdjjvsd")
 @Getter @Setter @NoArgsConstructor @ToString(callSuper = true)
 public class User extends BaseEntity {
@@ -42,4 +41,8 @@ public class User extends BaseEntity {
     private String email;
 
     private int salary;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn
+    private UserImages userImages;
 }
